@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SwiftDrop — Tamale Delivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <div class="splash-inner">
+      <div class="splash-logo"><i class="fas fa-bolt"></i></div>
+      <h1>SwiftDrop</h1>
+      <p>Tamale Delivery Platform</p>
+      <div class="splash-bar"><div class="splash-fill"></div></div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <div id="app" class="hidden">
+
+    <!-- ROLE SELECT -->
+    <div id="screen-role" class="screen active">
+      <div class="role-page">
+        <div class="role-hero">
+          <div class="hero-icon"><i class="fas fa-bolt"></i></div>
+          <h1>SwiftDrop</h1>
+          <p>Fast. Reliable. Tamale's own delivery platform.</p>
+          <div class="live-dot-row"><span class="ldot"></span> Live Demo</div>
+        </div>
+        <div class="role-grid">
+          <div class="role-card" onclick="enterAs('customer')">
+            <div class="rc-icon" style="background:linear-gradient(135deg,#10b981,#059669)">
+              <i class="fas fa-mobile-screen"></i>
+            </div>
+            <div class="rc-text">
+              <h3>Customer App</h3>
+              <p>Request delivery, track & manage wallet</p>
+            </div>
+            <i class="fas fa-chevron-right rc-arr"></i>
+          </div>
+          <div class="role-card" onclick="enterAs('rider')">
+            <div class="rc-icon" style="background:linear-gradient(135deg,#16a34a,#15803d)">
+              <i class="fas fa-motorcycle"></i>
+            </div>
+            <div class="rc-text">
+              <h3>Rider Portal</h3>
+              <p>Accept jobs, update status, earn money</p>
+            </div>
+            <i class="fas fa-chevron-right rc-arr"></i>
+          </div>
+          <div class="role-card" onclick="enterAs('admin')">
+            <div class="rc-icon" style="background:linear-gradient(135deg,#047857,#065f46)">
+              <i class="fas fa-gauge-high"></i>
+            </div>
+            <div class="rc-text">
+              <h3>Admin Dashboard</h3>
+              <p>Manage orders, riders & platform</p>
+            </div>
+            <i class="fas fa-chevron-right rc-arr"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMER APP -->
+    <div id="screen-customer" class="screen hidden">
+      <div class="phone-frame">
+        <div class="phone-status">
+          <span>9:41</span>
+          <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+        </div>
+        <div class="app-header">
+          <div>
+            <p class="greet">Good morning 👋</p>
+            <h3 class="uname">Sandra A.</h3>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="wallet-chip"><i class="fas fa-wallet"></i> GHS 48.50</div>
+            <button class="icon-btn" onclick="goBack()"><i class="fas fa-th"></i></button>
+          </div>
+        </div>
+
+        <div class="phone-body" id="pwa-body">
+          <div id="pwa-home">
+
+            <!-- ACTIVE ORDER BANNER -->
+            <div class="active-banner hidden" id="status-banner">
+              <div class="ab-dot"></div>
+              <div class="ab-info">
+                <strong id="status-title">Rider on the way</strong>
+                <span id="status-sub">Issah M. heading to pickup</span>
+              </div>
+              <span class="ab-eta" id="status-eta">4 min</span>
+            </div>
+
+            <!-- REQUEST FORM -->
+            <div class="request-card" id="request-card">
+              <div class="rc-label"><i class="fas fa-bolt"></i> New Delivery</div>
+              <div class="field-group">
+                <label>Pickup</label>
+                <div class="field-row">
+                  <i class="fas fa-map-pin" style="color:#10b981"></i>
+                  <input type="text" id="pickup-input" value="Central Market, Tamale"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Dropoff</label>
+                <div class="field-row">
+                  <i class="fas fa-flag" style="color:#059669"></i>
+                  <input type="text" id="dropoff-input" placeholder="Where to deliver?"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Package Type</label>
+                <div class="chip-row">
+                  <span class="chip active" onclick="pickChip(this)">📦 Package</span>
+                  <span class="chip" onclick="pickChip(this)">🍔 Food</span>
+                  <span class="chip" onclick="pickChip(this)">💊 Medicine</span>
+                  <span class="chip" onclick="pickChip(this)">📄 Documents</span>
+                  <span class="chip" onclick="pickChip(this)">🛒 Groceries</span>
+                </div>
+              </div>
+              <div class="fee-row">
+                <div class="fee-item"><i class="fas fa-road"></i> 3.2 km</div>
+                <div class="fee-item accent"><i class="fas fa-tag"></i> <strong>GHS 12.00</strong></div>
+              </div>
+              <button class="cta-btn" onclick="placeOrder()">
+                <i class="fas fa-bolt"></i> Request Delivery
+              </button>
+            </div>
+
+            <!-- ACTIVE ORDER -->
+            <div class="order-card hidden" id="active-card">
+              <div class="oc-head">
+                <div class="oc-pulse"></div>
+                <strong>Delivery in Progress</strong>
+                <span class="oc-eta" id="ac-eta">ETA 4 min</span>
+              </div>
+              <div class="rider-row-card">
+                <div class="rider-av"><i class="fas fa-user"></i></div>
+                <div>
+                  <p class="rider-n">Issah Mohammed</p>
+                  <p class="rider-p">GR-2847-21 · ⭐ 4.8</p>
+                </div>
+                <button class="call-btn" onclick="toast('Calling Issah…','info')">
+                  <i class="fas fa-phone"></i>
+                </button>
+              </div>
+              <div class="step-track">
+                <div class="stp done" id="ss1"><div class="stp-dot"><i class="fas fa-check"></i></div><span>Placed</span></div>
+                <div class="stp-line done"></div>
+                <div class="stp done" id="ss2"><div class="stp-dot"><i class="fas fa-check"></i></div><span>Assigned</span></div>
+                <div class="stp-line" id="line3"></div>
+                <div class="stp active" id="ss3"><div class="stp-dot"><i class="fas fa-motorcycle"></i></div><span>Picked Up</span></div>
+                <div class="stp-line" id="line4"></div>
+                <div class="stp" id="ss4"><div class="stp-dot"><i class="fas fa-flag"></i></div><span>Delivered</span></div>
+              </div>
+              <div class="wa-note">
+                <i class="fab fa-whatsapp" style="color:#25D366"></i>
+                <span>WhatsApp updates sent to +233 59 993 1348</span>
+              </div>
+            </div>
+
+            <!-- RECENT -->
+            <div class="sec-label">Recent Deliveries</div>
+            <div class="recent-wrap">
+              <div class="rec-item">
+                <div class="rec-icon g1"><i class="fas fa-box"></i></div>
+                <div class="rec-info"><p>Package → Kaladan Estate</p><span>Today · GHS 15.00</span></div>
+                <span class="badge-done">Done</span>
+              </div>
+              <div class="rec-item">
+                <div class="rec-icon g2"><i class="fas fa-burger"></i></div>
+                <div class="rec-info"><p>Food → Gurugu</p><span>Yesterday · GHS 8.50</span></div>
+                <span class="badge-done">Done</span>
+              </div>
+              <div class="rec-item">
+                <div class="rec-icon g3"><i class="fas fa-pills"></i></div>
+                <div class="rec-info"><p>Medicine → Teaching Hospital</p><span>May 22 · GHS 20.00</span></div>
+                <span class="badge-done">Done</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <button class="bnav active" onclick="pwaTab('home',this)"><i class="fas fa-house"></i><span>Home</span></button>
+          <button class="bnav" onclick="pwaTab('orders',this)"><i class="fas fa-list"></i><span>Orders</span></button>
+          <button class="bnav" onclick="pwaTab('wallet',this)"><i class="fas fa-wallet"></i><span>Wallet</span></button>
+          <button class="bnav" onclick="pwaTab('profile',this)"><i class="fas fa-user"></i><span>Profile</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIDER PORTAL -->
+    <div id="screen-rider" class="screen hidden">
+      <div class="rider-page">
+        <div class="rider-bar">
+          <button class="icon-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+          <h2>Rider Portal</h2>
+          <div class="online-toggle" id="online-toggle" onclick="toggleOnline()">
+            <div class="tog-ball"></div>
+          </div>
+          <span id="online-label" class="online-lbl">ONLINE</span>
+        </div>
+
+        <div class="rider-body">
+          <!-- EARNINGS -->
+          <div class="earn-grid">
+            <div class="earn-card"><span>Today</span><strong>GHS 87.00</strong></div>
+            <div class="earn-card"><span>This Week</span><strong>GHS 412.50</strong></div>
+            <div class="earn-card"><span>Total Jobs</span><strong>23</strong></div>
+            <div class="earn-card"><span>Rating</span><strong>⭐ 4.8</strong></div>
+          </div>
+
+          <!-- INCOMING JOB (WhatsApp style) -->
+          <div class="wa-card" id="wa-card">
+            <div class="wa-header">
+              <div class="wa-av"><i class="fas fa-bolt"></i></div>
+              <div><strong>SwiftDrop</strong><span>Business ✓</span></div>
+              <span class="wa-time">Just now</span>
+            </div>
+            <div class="wa-msg">
+              <p>🚀 *New Delivery Job!*</p>
+              <p>📍 *Pickup:* Central Market, Tamale</p>
+              <p>🏁 *Dropoff:* Kaladan Estate</p>
+              <p>📦 *Type:* Package</p>
+              <p>💰 *Earning:* GHS 9.60</p>
+              <div class="wa-accept-btn" onclick="riderAccept()">✅ Accept Job</div>
+            </div>
+          </div>
+
+          <!-- ACTIVE JOB -->
+          <div class="active-job hidden" id="rider-job">
+            <div class="aj-head">
+              <div class="oc-pulse"></div>
+              <strong>Active Job</strong>
+              <span class="job-id-tag">JOB-0047</span>
+            </div>
+            <div class="aj-route">
+              <div class="aj-stop">
+                <i class="fas fa-map-pin" style="color:#10b981"></i>
+                <div><p>Pickup</p><strong>Central Market, Tamale</strong></div>
+              </div>
+              <div class="aj-divider"></div>
+              <div class="aj-stop">
+                <i class="fas fa-flag" style="color:#059669"></i>
+                <div><p>Dropoff</p><strong>Kaladan Estate</strong></div>
+              </div>
+            </div>
+            <div class="job-steps">
+              <button class="jstep done" id="js1"><i class="fas fa-check-circle"></i> Accepted</button>
+              <button class="jstep" id="js2" onclick="advanceJob()"><i class="fas fa-circle"></i> At Pickup</button>
+              <button class="jstep" id="js3"><i class="fas fa-circle"></i> In Transit</button>
+              <button class="jstep" id="js4"><i class="fas fa-circle"></i> Delivered</button>
+            </div>
+            <button class="cta-btn" id="job-cta" onclick="advanceJob()">
+              <i class="fas fa-arrow-right"></i> Mark At Pickup
+            </button>
+            <div class="earn-note">
+              <i class="fas fa-coins" style="color:#f59e0b"></i> Earning: <strong>GHS 9.60</strong>
+            </div>
+          </div>
+
+          <button class="cta-btn outline" onclick="simulateJob()">
+            <i class="fas fa-bell"></i> Simulate New Job
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="screen-admin" class="screen hidden">
+      <div class="admin-layout">
+        <aside class="sidebar">
+          <div class="sb-logo"><i class="fas fa-bolt"></i> SwiftDrop</div>
+          <nav class="sb-nav">
+            <button class="snav active" onclick="aTab('overview',this)"><i class="fas fa-chart-pie"></i> Overview</button>
+            <button class="snav" onclick="aTab('orders',this)"><i class="fas fa-box"></i> Orders</button>
+            <button class="snav" onclick="aTab('riders',this)"><i class="fas fa-motorcycle"></i> Riders</button>
+            <button class="snav" onclick="aTab('wallet',this)"><i class="fas fa-wallet"></i> Wallets</button>
+            <button class="snav" onclick="aTab('messages',this)"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+          </nav>
+          <button class="snav switch-btn" onclick="goBack()"><i class="fas fa-grid-2"></i> Switch</button>
+        </aside>
+
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h2 id="page-title">Overview</h2>
+              <p class="page-sub">SwiftDrop Admin Panel</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="live-pill"><span class="lpulse"></span> Live</div>
+              <div class="admin-chip"><i class="fas fa-shield-halved"></i> Admin</div>
+            </div>
+          </div>
+
+          <!-- OVERVIEW -->
+          <div id="tab-overview" class="atab active">
+            <div class="kpi-grid">
+              <div class="kpi" style="--c:#10b981"><div class="kpi-icon"><i class="fas fa-box"></i></div><div><span id="k-orders">0</span><p>Orders Today</p></div></div>
+              <div class="kpi" style="--c:#059669"><div class="kpi-icon"><i class="fas fa-motorcycle"></i></div><div><span id="k-riders">0</span><p>Active Riders</p></div></div>
+              <div class="kpi" style="--c:#047857"><div class="kpi-icon"><i class="fas fa-users"></i></div><div><span id="k-customers">0</span><p>Customers</p></div></div>
+              <div class="kpi" style="--c:#065f46"><div class="kpi-icon"><i class="fas fa-coins"></i></div><div><span id="k-revenue">0</span><p>Revenue (GHS)</p></div></div>
+            </div>
+            <div class="acard">
+              <div class="acard-head">
+                <h3>Pending Orders <span class="count-pill" id="pending-count">3</span></h3>
+                <span class="live-pill"><span class="lpulse"></span> Auto-refresh</span>
+              </div>
+              <div id="pending-orders"></div>
+            </div>
+            <div class="two-col">
+              <div class="acard">
+                <div class="acard-head"><h3>Deliveries This Week</h3></div>
+                <div class="bar-chart" id="bar-chart"></div>
+              </div>
+              <div class="acard">
+                <div class="acard-head"><h3>Top Riders</h3></div>
+                <div id="top-riders"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ORDERS -->
+          <div id="tab-orders" class="atab hidden">
+            <div class="acard">
+              <div class="acard-head">
+                <h3>All Orders</h3>
+                <select class="fsel" onchange="renderAllOrders(this.value)">
+                  <option value="all">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="transit">In Transit</option>
+                  <option value="done">Delivered</option>
+                </select>
+              </div>
+              <div id="all-orders-list"></div>
+            </div>
+          </div>
+
+          <!-- RIDERS -->
+          <div id="tab-riders" class="atab hidden">
+            <div class="acard">
+              <div class="acard-head">
+                <h3>Riders</h3>
+                <button class="btn-green" onclick="toast('Add rider form opened','info')"><i class="fas fa-plus"></i> Add Rider</button>
+              </div>
+              <div id="riders-list"></div>
+            </div>
+          </div>
+
+          <!-- WALLET -->
+          <div id="tab-wallet" class="atab hidden">
+            <div class="kpi-grid">
+              <div class="kpi" style="--c:#10b981"><div class="kpi-icon"><i class="fas fa-arrow-down"></i></div><div><span>GHS 2,840</span><p>Total Collected</p></div></div>
+              <div class="kpi" style="--c:#059669"><div class="kpi-icon"><i class="fas fa-arrow-up"></i></div><div><span>GHS 1,990</span><p>Paid to Riders</p></div></div>
+              <div class="kpi" style="--c:#047857"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div><span>GHS 850</span><p>Platform Fee</p></div></div>
+            </div>
+            <div class="acard">
+              <div class="acard-head"><h3>Top-Up Requests</h3></div>
+              <div id="topup-list"></div>
+            </div>
+          </div>
+
+          <!-- WHATSAPP -->
+          <div id="tab-messages" class="atab hidden">
+            <div class="acard">
+              <div class="acard-head">
+                <h3>WhatsApp Dispatch Log</h3>
+                <span style="color:#25D366;font-size:.78rem;font-weight:700"><i class="fab fa-whatsapp"></i> Auto-sent</span>
+              </div>
+              <div id="wa-log"></div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
